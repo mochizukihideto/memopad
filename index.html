@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/jquery-2.1.3.min.js"></script>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Document</title>
+</head>
+<header id="header">勉強時間MEMO</header>
+<body id="body">
+    <div>
+        <div class="calendar-box">
+          <div id="calendar"></div>
+        </div>
+        <div>
+          <div id="diary_date"></div>
+          <input type="text" id="diary_title"><br><br>
+          <textarea id="diary_body" rows="10" cols="18"></textarea><br><br>
+          <input type="button" id="button" onclick="onSave(this)" value="保存">
+        </div>
+      </div>
+
+
+   
+</body>
+<script>
+  function presetDiary(dateStr){
+     var button = document.getElementById("button");
+     button.setAttribute("data-date", dateStr);
+     var diary_date = document.getElementById("diary_date");
+     diary_date.innerHTML = dateStr;
+     var title = localStorage[dateStr+"_title"];
+     var body  = localStorage[dateStr+"_body"];
+     var diary_title = document.getElementById('diary_title');
+     var diary_body = document.getElementById('diary_body');
+     if(title){
+       diary_title.value = title;
+     }else{
+       diary_title.value = "";
+     }
+     if(body){
+       diary_body.value = body;
+     }else{
+       diary_body.value = "";
+     }
+   }
+
+   function onSave(obj){
+     let dateStr   = obj.getAttribute("data-date");
+     let diary_title  = document.getElementById('diary_title').value;
+     let diary_body   = document.getElementById('diary_body').value;
+     localStorage[dateStr+"_title"] = diary_title;
+     localStorage[dateStr+"_body"] = diary_body;
+     window.alert("日記を投稿しました");
+     location.reload();
+   }
+
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let today = date.getDate();
+    let firstDate = new Date(year, month-1, 1);
+    let lastDate = new Date(year, month, 0);
+    let table_title = year+"年 "+month+"月";
+    let captionHtml = "<caption>"+table_title+"</caption>";
+    let weekdays = ["日", "月", "火", "水", "木", "金", "土"];
+    let weekdaysStr = "<tr>";
+    for ( let i=0; i < 7; i++){
+       if(i==0){
+         weekdaysStr += "<td class='sun'>" + weekdays[i] + "</td>";
+       }else if(i==6){
+         weekdaysStr += "<td class='sat'>" + weekdays[i] + "</td>";
+       }else{
+         weekdaysStr += "<td>" + weekdays[i] + "</td>";
+       }
+    }
+    weekdaysStr += "</tr>";
+    let htmlStr = "<tr>";
+    let startWeekDay = firstDate.getDay();
+    for ( let i=0; i < startWeekDay; i++){
+       htmlStr += "<td>&nbsp;</td>";
+    }
+    for(let i=1; i <= lastDate.getDate(); i++){
+        let date = new Date(year, month-1, i);
+        let weekDay = date.getDay();
+        let dateStr = year+"."+month+"."+i;
+        let cellStr = date.getDate();
+      
+       if(localStorage[dateStr+"_title"]) cellStr = "<u>" + cellStr + "</u>";
+      
+        if(weekDay == 0) htmlStr += "<tr>";
+        if(weekDay == 0){
+          htmlStr += "<td class='sun'>";
+        }else if(weekDay == 6){
+          htmlStr += "<td class='sat'>";
+        }else{
+          htmlStr += "<td>";
+        }
+
+      htmlStr +=  "<a onclick='presetDiary(\"" + dateStr + "\");'>" + cellStr + "</a></td>";
+
+        if(weekDay == 6) htmlStr += "</tr>\n";
+    }
+    let lastDayWeek = lastDate.getDay();
+    if (lastDayWeek != 6) {
+      for ( let i=lastDayWeek+1; i <= 6; i++){
+         htmlStr += "<td>&nbsp;</td>";
+      }
+      htmlStr += "</tr>";
+    }
+    document.getElementById("calendar").innerHTML = "<table>" + captionHtml + weekdaysStr + htmlStr + "</table>";
+
+    /*
+    Background Gradients From -- 
+    https://uigradients.com
+    */
+
+
+</script>
+
+</html>
