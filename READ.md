@@ -6,7 +6,7 @@ MEMOPAD 提出用
 - メモができる課題です。
 
 ## ③DEMO
-- https://tatsuyamaeta.github.io/github_pages/
+- file:///Users/user/Desktop/memopad/kadai/index.html
 
 ## ④作ったアプリケーション用のIDまたはPasswordがある場合
 
